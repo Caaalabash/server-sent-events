@@ -2,6 +2,18 @@
 
 A NodeJS wrapper for [Server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
 
+## INSTALL
+
+````
+npm install @caaalabash/node-sse -S
+````
+
+````
+const SSE = require('@caaalabash/node-sse')
+
+new SSE(options)
+````
+
 ## API
 
 ### new SSE(options)
