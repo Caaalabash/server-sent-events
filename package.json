@@ -1,5 +1,5 @@
 {
-  "name": "server-sent-events",
+  "name": "node-sse",
   "version": "0.0.1",
   "description": "Server-sent events for NodeJS",
   "main": "index.js",
