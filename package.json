@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/Caaalabash/server-sent-events/issues"
   },
-  "homepage": "https://github.com/Caaalabash/server-sent-events#readme"
+  "homepage": "https://github.com/Caaalabash/server-sent-events#readme",
+  "dependencies": {
+    "uuid": "^3.3.3"
+  }
 }
