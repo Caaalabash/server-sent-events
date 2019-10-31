@@ -1,4 +1,4 @@
-const { PassThrough } = require('stream')
+const { Transform } = require('stream')
 const uuid = require('uuid/v4')
 
 const connectionMap = new Map()
@@ -6,7 +6,7 @@ const connectionMap = new Map()
 /**
  * Transform stream: convert Buffer to Event stream format
  */
-class BufferToSSE extends PassThrough {
+class BufferToSSE extends Transform {
   /**
    * @param {String} eventName - Event name for transformStream.on('data')
    * @param {Function} processChunk - A function to process chunk
