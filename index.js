@@ -1,4 +1,4 @@
-const { Transform } = require('stream')
+const { Transform, PassThrough } = require('stream')
 const uuid = require('uuid/v4')
 
 const connectionMap = new Map()
