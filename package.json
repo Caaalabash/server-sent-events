@@ -1,6 +1,6 @@
 {
   "name": "@caaalabash/node-sse",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Server-sent events for NodeJS",
   "main": "index.js",
   "scripts": {
