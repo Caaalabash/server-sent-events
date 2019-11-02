@@ -18,25 +18,27 @@ new SSE(options)
 
 ### new SSE(options)
 
-This will create an `SSE` instance
+This will create an `SSE` instance.
 
 + Properties:
-  + `uid`: used for defining an unique conversation
-  + `stream`: event stream, send to client directly
-  + `transformStream`: extra stream, process by `processChunkFunc` function then send to `stream`
+  + `uid`: used for defining an unique conversation.
+  + `stream`: event stream, send to client directly.
+  + `transformStream`: extra stream, process by `processChunk` function then send to `stream`.
   
 + Options:
-  + `genId`: Function - How to generate uid, by default, it's uuid/v4
-  + `heartBeatInterval`: Number - Keep alive milliseconds, by default, it's 5000
-  + `setHeaderFunc`: Function - A function that set response headers, by default, it's `noop`
-  + `connectEventName`: String - Connect event name, by default, it's sse-connect
-  + `transformEventName`: String - EventName for transformStream, by default, it's sse-data
-  + `processChunk`: Function - A function that process `transformStream` receive data
+  + `setHeaderFunc` - How to write response headers? This is relate to framework.
+  + `[genId]` - How to generate sse conversation uuid? By default, it's `uuid/v4`.
+  + `[processChunk]` - How to transform chunkData to sse stream? By default, just `.toString()`.
+  + `[heartBeatInterval]` - Keep alive milliseconds, by default, it's 5000 ms.
+  + `[retryTime]` - Reconnect SSE interval, by default, it's 5000 ms.
+  + `[connectEventName]` - Connect event name, by default, it's sse-connect.
+  + `[transformEventName]` - Event name for transformStream.on('data').
+  + `[withMessageId]`- send message with message id, by default, it's true, increase from 0.
   
 + Methods:
-  + `send(event, payload)`: Send custom event to client, support string/object
-  + `sendFromStream(readableStream)`: Send stream to transformStream
-  + `static getInstance(uid)`: get instance by uid
+  + `send(event, payload)`: Send custom event to client, support string/object.
+  + `sendFromStream(readableStream)`: Send stream to transformStream.
+  + `static getInstance(uid)`: Get instance by uid.
 
 ## EXAMPLE
 
