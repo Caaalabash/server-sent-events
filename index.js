@@ -40,7 +40,7 @@ class SSE {
 
     this.uid = genId()
     this.transformStream = new Transform({
-      transform(chunk, encoding, callback) {
+      transform: (chunk, encoding, callback) => {
         callback(null, this._wrapWithMessageId(`event: ${transformEventName}\ndata: ${processChunk(chunk)}\n\n`))
       }
     })
