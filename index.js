@@ -13,6 +13,7 @@ class SSE {
    * @param {Function} [processChunk] - How to transform chunkData to sse stream? By default, just `.toString()`.
    * @param {Number} [heartBeatInterval] - Keep alive milliseconds, by default, it's 5000.
    * @param {Number} [retryTime] - Reconnect SSE interval, by default, it's 5000.
+   * @param {Number} [lastEventId] - Set messageId init value, by default, it's 0.
    * @param {String} [connectEventName] - Connect event name, by default, it's sse-connect.
    * @param {String} [transformEventName] - Event name for transformStream.on('data').
    * @param {Boolean} [withMessageId] - Send message with message id, by default, it's true, increase from 0.
@@ -23,6 +24,7 @@ class SSE {
     processChunk = chunk => chunk.toString(),
     heartBeatInterval = 5000,
     retryTime = 5000,
+    lastEventId = 0,
     connectEventName = 'sse-connect',
     transformEventName = 'sse-data',
     withMessageId = true
@@ -36,7 +38,7 @@ class SSE {
     this.retryTime = retryTime
     this.connectEventName = connectEventName
     this.withMessageId = withMessageId
-    this.messageId = 0
+    this.messageId = lastEventId
 
     this.uid = genId()
     this.transformStream = new Transform({
@@ -82,7 +84,7 @@ class SSE {
       'Cache-Control': 'no-cache, no-transform',
       'Connection': 'keep-alive'
     })
-    this._writeKeepAliveStream()
+    this._writeKeepAliveStream(true)
     this._setRetryInterval()
     this.send(this.connectEventName, this.uid)
 
@@ -97,9 +99,15 @@ class SSE {
   }
   /**
    * Keep Alive
+   * It is required to send 2 KB padding for IE < 10 and Chrome < 13 at the top of the response stream
    */
-  _writeKeepAliveStream() {
-    this.stream.write(': \n\n')
+  _writeKeepAliveStream(first = false) {
+    if (!first) {
+      this.stream.write(': \n')
+    } else {
+      const padding = new Array(2049).join(' ')
+      this.stream.write(':' + padding + '\n')
+    }
   }
   /**
    * Set Retry Interval
@@ -112,7 +120,7 @@ class SSE {
    */
   _wrapWithMessageId(message) {
     if (!this.withMessageId) return message
-    return `id: ${this.messageId++}\n${message}`
+    return `id: ${++this.messageId}\n${message}`
   }
 }
 

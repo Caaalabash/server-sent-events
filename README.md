@@ -31,6 +31,7 @@ This will create an `SSE` instance.
   + `[processChunk]` - How to transform chunkData to sse stream? By default, just `.toString()`.
   + `[heartBeatInterval]` - Keep alive milliseconds, by default, it's 5000 ms.
   + `[retryTime]` - Reconnect SSE interval, by default, it's 5000 ms.
+  + `[lastEventId]` - Set messageId init value, by default, it's 0.
   + `[connectEventName]` - Connect event name, by default, it's sse-connect.
   + `[transformEventName]` - Event name for transformStream.on('data').
   + `[withMessageId]`- send message with message id, by default, it's true, increase from 0.
