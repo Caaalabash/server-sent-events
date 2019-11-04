@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SSE Example</title>
+</head>
+<body>
+<script>
+  const es = new EventSource('/connect')
+  const listener = function (event) {
+    const div = document.createElement('div')
+    const type = event.type
+    const text = event.data ? `${type}: ${event.data}` : `${type}`
+
+    div.appendChild(document.createTextNode(text))
+    document.body.appendChild(div)
+  }
+  es.addEventListener('open', listener)
+  es.addEventListener('sse-connect', listener)
+  es.addEventListener('sse-test', listener)
+  es.addEventListener('error', listener)
+</script>
+</body>
+</html>
