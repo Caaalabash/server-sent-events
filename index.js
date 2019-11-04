@@ -2,30 +2,7 @@ const { Transform, PassThrough } = require('stream')
 const uuid = require('uuid/v4')
 
 const connectionMap = new Map()
-let messageId = 0
 
-function wrapWithMessageId(message) {
-  if (!this.withMessageId) return message
-  return `id: ${messageId++}\n${message}`
-}
-
-/**
- * Transform stream: convert Buffer to Event stream format
- */
-class BufferToSSE extends Transform {
-  /**
-   * @param {Object} options - Pass from SSE
-   */
-  constructor(options) {
-    super()
-    this.eventName = options.eventName
-    this.processChunk = options.processChunk
-    this.withMessageId = options.withMessageId
-  }
-  _transform(chunk, encoding, callback) {
-    callback(null, wrapWithMessageId.apply(this, [`event: ${this.eventName}\ndata: ${this.processChunk(chunk)}\n\n`]))
-  }
-}
 /**
  * Server-sent Events Wrapper
  */
@@ -59,9 +36,14 @@ class SSE {
     this.retryTime = retryTime
     this.connectEventName = connectEventName
     this.withMessageId = withMessageId
+    this.messageId = 0
 
     this.uid = genId()
-    this.transformStream = new BufferToSSE({ eventName: transformEventName, processChunk, withMessageId })
+    this.transformStream = new Transform({
+      transform(chunk, encoding, callback) {
+        callback(null, this._wrapWithMessageId(`event: ${transformEventName}\ndata: ${processChunk(chunk)}\n\n`))
+      }
+    })
     this.stream = new PassThrough()
     this.transformStream.pipe(this.stream)
 
@@ -82,7 +64,7 @@ class SSE {
   send(event, data) {
     const payload = typeof data === 'string' ? data : JSON.stringify(data)
 
-    this.stream.write(wrapWithMessageId.apply(this, [`event: ${event}\ndata: ${payload}\n\n`]))
+    this.stream.write(this._wrapWithMessageId(`event: ${event}\ndata: ${payload}\n\n`))
   }
   /**
    * Send Custom Events from stream
@@ -124,6 +106,13 @@ class SSE {
    */
   _setRetryInterval() {
     this.stream.write(`retry: ${this.retryTime}\n`)
+  }
+  /**
+   * Wrap Message with MessageId
+   */
+  _wrapWithMessageId(message) {
+    if (!this.withMessageId) return message
+    return `id: ${this.messageId++}\n${message}`
   }
 }
 
