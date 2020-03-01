@@ -66,7 +66,7 @@ class SSE {
   send(event, data) {
     const payload = typeof data === 'string' ? data : JSON.stringify(data)
 
-    this.stream.write(this._wrapWithMessageId(`event: ${event}\ndata: ${payload}\n\n`))
+    this._write(this._wrapWithMessageId(`event: ${event}\ndata: ${payload}\n\n`))
   }
   /**
    * Send Custom Events from stream
@@ -103,17 +103,17 @@ class SSE {
    */
   _writeKeepAliveStream(first = false) {
     if (!first) {
-      this.stream.write(': \n')
+      this._write(': \n')
     } else {
       const padding = new Array(2049).join(' ')
-      this.stream.write(':' + padding + '\n')
+      this._write(':' + padding + '\n')
     }
   }
   /**
    * Set Retry Interval
    */
   _setRetryInterval() {
-    this.stream.write(`retry: ${this.retryTime}\n`)
+    this._write(`retry: ${this.retryTime}\n`)
   }
   /**
    * Wrap Message with MessageId
@@ -121,6 +121,12 @@ class SSE {
   _wrapWithMessageId(message) {
     if (!this.withMessageId) return message
     return `id: ${++this.messageId}\n${message}`
+  }
+  /**
+   * Check Writable
+   */
+  _write(message) {
+    this.stream.writable && this.stream.write(message)
   }
 }
 
